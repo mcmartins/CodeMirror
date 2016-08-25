@@ -25,7 +25,7 @@
   var properties = /(?:\+|-|\*|\/|\^|~|!\.|=|<>|<|<=|>|>=|!\[|:=|\.|\.\.|->|,|;|!\{|\[|]|\{|}|\(|\)|:)/;
   var keywords = /Assert|Info|IsBound|QUIT|TryNextMethod|Unbind|and|atomic|break|continue|do|elif|else|end|false|fi|for|function|if|in|local|mod|not|od|or|quit|readonly|readwrite|rec|repeat|return|then|true|until|while/;
   var indentTokens = /function|if|repeat|while/;
-  var dedentTokens = /end|od|fi/;
+  var dedentTokens = /end|od|fi|else|elif/;
   var electricTokens = /fi;|od;|end;|else|elif/;
 
   CodeMirror.defineSimpleMode('gap', {
