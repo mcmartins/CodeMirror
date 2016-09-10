@@ -12,7 +12,7 @@
   'use strict';
 
   function createBuiltinRegularExpression(words) {
-    return new RegExp(words.join('(?!\\\\[(),.]?|[a-zA-Z0-9_@]+)|') + '(?!\\\\[(),.]?|[a-zA-Z0-9_@]+)', 'm');
+    return new RegExp(words.join('(?!\\\\[(),.]?|[\\w@]+)|') + '(?!\\\\[(),.]?|[\\w@]+)', 'm');
   }
 
   function createKeywordRegularExpression(words) {
@@ -449,8 +449,8 @@
   var comment = /(?:#.*$)/;
   var blockLiterals = /(?:""")/;
   var literals = /(?:")/;
-  var numbers = /(?:\d*\.?\d+(?![\w_@\\]))/;
-  var variables = /(?:\\[(),.]?|[a-zA-Z0-9_@]+)/;
+  var numbers = /(?:\d*\.?\d+(?![\w@\\]))/;
+  var variables = /(?:\\[(),.]?|[\w@]+)/;
   var properties = /(?:\+|-|\*|\/|\^|~|!\.|=|<>|<|<=|>|>=|!\[|:=|\.|\.\.|->|,|;|!\{|\[|]|\{|}|\(|\)|:)/;
   var indentTokens = /(?:\bfunction\b|\bif\b|\brepeat\b|\bwhile\b)/;
   var dedentTokens = /(?:\bend;?\b|\bod;?\b|\bfi;?\b)/;
