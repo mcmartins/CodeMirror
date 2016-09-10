@@ -11,11 +11,15 @@
 })(function (CodeMirror) {
   'use strict';
 
-  function createRegularExpression(words) {
+  function createBuiltinRegularExpression(words) {
     return new RegExp(words.join('(?!\\\\[(),.]?|[a-zA-Z0-9_@]+)|') + '(?!\\\\[(),.]?|[a-zA-Z0-9_@]+)', 'm');
   }
 
-  var builtin = createRegularExpression(['AbelianGroup', 'AbelianInvariants', 'AbelianInvariantsMultiplier', 'AbelianInvariantsNormalClosureFpGroup', 'AbelianInvariantsNormalClosureFpGroupRrs', 'AbelianInvariantsOfList', 'AbelianInvariantsSubgroupFpGroup', 'AbelianInvariantsSubgroupFpGroupMtc',
+  function createKeywordRegularExpression(words) {
+    return new RegExp('\\b' + words.join('\\b|\\b') + '\\b', 'm');
+  }
+
+  var builtin = createBuiltinRegularExpression(['AbelianGroup', 'AbelianInvariants', 'AbelianInvariantsMultiplier', 'AbelianInvariantsNormalClosureFpGroup', 'AbelianInvariantsNormalClosureFpGroupRrs', 'AbelianInvariantsOfList', 'AbelianInvariantsSubgroupFpGroup', 'AbelianInvariantsSubgroupFpGroupMtc',
     'AbelianInvariantsSubgroupFpGroupRrs', 'AbelianNumberField', 'AbelianSubfactorAction', 'About', 'AbsInt', 'AbsoluteDiameter', 'AbsoluteIrreducibleModules', 'AbsolutelyIrreducibleModules',
     'AbsoluteValue', 'AbsolutIrreducibleModules', 'AbstractWordTietzeWord', 'AClosestVectorCombinationsMatFFEVecFFE', 'AClosestVectorCombinationsMatFFEVecFFECoords', 'Acos', 'Acosh', 'ActingAlgebra',
     'ActingDomain', 'Action', 'ActionHomomorphism', 'ActivateProfileColour', 'ActorOfExternalSet', 'Add', 'AddCoeffs', 'AddDictionary',
@@ -438,18 +442,19 @@
     'WriteByte', 'WriteGapIniFile', 'WriteLine', 'X', 'Z', 'ZClassRepsQClass', 'Zero', 'ZeroAttr',
     'ZeroCoefficient', 'ZeroCoefficientRatFun', 'ZeroImmutable', 'ZeroMapping', 'ZeroMutable', 'ZeroOp', 'ZeroSameMutability', 'ZeroSM',
     'Zeta', 'ZippedProduct', 'ZippedSum', 'ZmodnZ', 'ZmodnZObj', 'ZmodpZ', 'ZmodpZNC', 'ZumbroichBase', 'Zuppos']);
-  var other = /./;
-  var comment = /#.*$/;
-  var blockLiterals = /"""/;
-  var literals = /"/;
-  var numbers = /(?:(\d+)?\.?\d+(?![\w_@\\]))/;
+  var keywords = createKeywordRegularExpression(['Assert', 'Info', 'IsBound', 'QUIT', 'TryNextMethod', 'Unbind', 'and',
+    'atomic', 'break', 'continue', 'do', 'elif', 'else', 'end', 'false', 'fi', 'for', 'function', 'if', 'in', 'local',
+    'mod', 'not', 'od', 'or', 'quit', 'readonly', 'readwrite', 'rec', 'repeat', 'return', 'then', 'true', 'until', 'while']);
+  var all = /(?:.)/;
+  var comment = /(?:#.*$)/;
+  var blockLiterals = /(?:""")/;
+  var literals = /(?:")/;
+  var numbers = /(?:\d*\.?\d+(?![\w_@\\]))/;
   var variables = /(?:\\[(),.]?|[a-zA-Z0-9_@]+)/;
   var properties = /(?:\+|-|\*|\/|\^|~|!\.|=|<>|<|<=|>|>=|!\[|:=|\.|\.\.|->|,|;|!\{|\[|]|\{|}|\(|\)|:)/;
-  var keywords = /Assert|Info|IsBound|QUIT|TryNextMethod|Unbind|and|atomic|break|continue|do|elif|else|end|false|fi|for|function|if|in|local|mod|not|od|or|quit|readonly|readwrite|rec|repeat|return|then|true|until|while/;
-  var indentTokens = /\bfunction\b|\bif\b|\brepeat\b|\bwhile\b/;
-  var dedentTokens = /\bend;?\b|\bod;?\b|\bfi;?\b/;
-  var partiallyDedentTokens = /\belse?\b|\belif\b/;
-  var electricTokens = /./;
+  var indentTokens = /(?:\bfunction\b|\bif\b|\brepeat\b|\bwhile\b)/;
+  var dedentTokens = /(?:\bend;?\b|\bod;?\b|\bfi;?\b)/;
+  var partiallyDedentTokens = /(?:\belse?\b|\belif\b)/;
 
   CodeMirror.defineSimpleMode('gap', {
     start: [
@@ -464,7 +469,7 @@
       {regex: numbers, token: 'number'},
       {regex: keywords, token: 'keyword'},
       {regex: variables, token: 'variable'},
-      {regex: other, token: null}
+      {regex: all, token: null}
     ],
     string: [
       {regex: /(?:[^\\]|\\.)*?"/, token: 'string', next: 'start'},
@@ -474,7 +479,7 @@
       {regex: /(?:[^\\]|\\.)*?"""/, token: 'string', next: 'start'},
       {regex: /.*/, token: 'string'}
     ],
-    meta: {lineComment: '#', electricInput: electricTokens, dontIndentStates: ['comment']}
+    meta: {lineComment: '#', electricInput: all, dontIndentStates: ['comment']}
   });
 
   CodeMirror.defineMIME('text/x-gap', 'gap');
