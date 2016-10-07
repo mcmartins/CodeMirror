@@ -17,13 +17,13 @@
 
   CodeMirror.registerHelper('lint', 'gap', function (text) {
     if (!window.GapLint) return [];
-    var result = GapLint.validate(text);
+    var result = GapLint.validate(text).getErrors();
     var found = [];
     for (var res in result) {
       if (result.hasOwnProperty(res)) {
         found.push({
-          message: result[res].getMessage(),
-          severity: result[res].rule.severity,
+          message: result[res].message,
+          severity: result[res].type,
           from: CodeMirror.Pos(result[res].line, result[res].column),
           to: CodeMirror.Pos(result[res].line, result[res].column+100)
         });

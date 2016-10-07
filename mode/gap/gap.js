@@ -448,7 +448,7 @@
   var all = /(?:.)/;
   var comment = /(?:#.*$)/;
   var blockLiterals = /(?:""")/;
-  var literals = /(?:")/;
+  var literals = /(?:")|(?:')/;
   var numbers = /(?:\d*\.?\d+(?![\w@\\]))/;
   var variables = /(?:\\[(),.]?|[\w@]+)/;
   var properties = /(?:\+|-|\*|\/|\^|~|!\.|=|<>|<|<=|>|>=|!\[|:=|\.|\.\.|->|,|;|!\{|\[|]|\{|}|\(|\)|:)/;
@@ -472,11 +472,11 @@
       {regex: all, token: null}
     ],
     string: [
-      {regex: /(?:[^\\]|\\.)*?"/, token: 'string', next: 'start'},
+      {regex: /(?:[^\\"']|\\.)*?"|(?:[^\\"']|\\.)*?'/, token: 'string', next: 'start'},
       {regex: /.*/, token: 'string'}
     ],
     string2: [
-      {regex: /(?:[^\\]|\\.)*?"""/, token: 'string', next: 'start'},
+      {regex: /(?:[^\\"]|\\.)*?"""/, token: 'string', next: 'start'},
       {regex: /.*/, token: 'string'}
     ],
     meta: {lineComment: '#', electricInput: all, dontIndentStates: ['comment']}
